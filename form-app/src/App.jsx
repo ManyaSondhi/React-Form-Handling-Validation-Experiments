@@ -12,22 +12,29 @@ function App() {
     skills: []
   };
  const calculateAge = (dob) => {
-  const birthDate = new Date(dob);
+  if (!dob) return null;
+
   const today = new Date();
 
-  if (birthDate > today) {
-    return null; 
-  }
+  // Split date manually (yyyy-mm-dd)
+  const [year, month, day] = dob.split("-").map(Number);
 
-  let age = today.getFullYear() - birthDate.getFullYear();
+  const birthYear = year;
+  const birthMonth = month - 1; // JS months are 0-based
+  const birthDay = day;
 
-  const monthDiff = today.getMonth() - birthDate.getMonth();
+  let age = today.getFullYear() - birthYear;
 
   if (
-    monthDiff < 0 ||
-    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    today.getMonth() < birthMonth ||
+    (today.getMonth() === birthMonth && today.getDate() < birthDay)
   ) {
     age--;
+  }
+
+  // Prevent future date issue
+  if (age < 0) {
+    return null;
   }
 
   return age;
